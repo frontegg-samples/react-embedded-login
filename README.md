@@ -33,15 +33,23 @@ If you're using your own credentials, follow the guidelines below.
 3. Get your Frontegg domain from the Frontegg Portal → [ENVIRONMENT] → Keys & domains
 4. This sample runs on `http://localhost:3000`. You may need to add `http://localhost:3000` under → [ENVIRONMENT] → Keys & domains → Allowed origins.
 
-### 2. Install dependencies -
+### 2. Clone the repository - 
 
-Run the following commands:
+Run the following command:
+
+```bash
+npm clone <repo>
+```
+
+### 3. Install dependencies -
+
+Run the following command:
 
 ```bash
 npm install
 ```
 
-### 3. Run the application -
+### 4. Run the application -
 
 To start the application, run:
 
