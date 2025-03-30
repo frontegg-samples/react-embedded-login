@@ -6,7 +6,7 @@ This sample showcases how to seamlessly add authentication and user management t
 
 ## This app showcases -
 
-- Redirect users to Frontegg’s hosted login
+- Redirect users to Frontegg’s embedded login
 - Enable a fully integrated self-service portal
 - Manage and track user authentication state
 - Access and display user profile details
