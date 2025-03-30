@@ -23,13 +23,13 @@ You’ll also need a Frontegg account. [Sign up for free](https://frontegg-prod.
 Don’t have an account yet? No worries. This project includes **sandbox credentials** so you can test it right away!
 
 
-## Get started in 3 simple steps -
+## Get started in 3 simple steps
 
 If you don’t have a Frontegg account or prefer to use the sandbox credentials, feel free to skip to step **2**.
 
 If you're using your own credentials, follow the guidelines below.
 
-### 1. Configure Your Frontegg Application (If using your own account)
+### 1. Configure your Frontegg application (if using your own account)
 
 1. Go to [Frontegg Portal](https://portal.frontegg.com/)
 2. Get your application ID from [ENVIRONMENT] → Applications
