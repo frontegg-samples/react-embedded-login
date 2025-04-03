@@ -9,7 +9,7 @@ import { ITenantsResponseV2 } from "@frontegg/rest-api";
 import getInitials from "../utils/getInitials";
 import CopyToClipboardButton from "./CopyToClipboardButton";
 import TenantsDropdown from "./TenantsDropdown";
-import { useEffect, useMemo } from "react";
+import { useEffect } from "react";
 
 type ITentantsExtended = ITenantsResponseV2 & {
   creatorEmail: string;
@@ -29,7 +29,7 @@ const TenantInfo = () => {
     loadUsers({ pageOffset: 0, pageSize: 100 });
   }, [loadUsers]);
 
-  const usersCount = useMemo(() => users.length, [users]);
+  const usersCount = users.length;
 
   const openAccountSettings = () => {
     window.location.href = "#/admin-box/account";
