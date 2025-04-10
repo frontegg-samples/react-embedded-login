@@ -127,17 +127,39 @@ jobs:
           fi
 
       - name: Enable PR Auto-merge
+        id: automerge
         if: steps.check-updates.outputs.update_available == 'true' && success()
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           PR_URL="${{ steps.create-pr.outputs.pr_url }}"
           PR_NUMBER=$(echo $PR_URL | awk -F/ '{print $NF}')
-          gh pr merge $PR_NUMBER --auto --squash
-          echo "Enabled auto-merge for PR #$PR_NUMBER"
+          
+          echo "Attempting to enable auto-merge for PR #$PR_NUMBER"
+          if gh pr merge $PR_NUMBER --auto --squash 2>/dev/null; then
+            echo "automerge_failed=false" >> $GITHUB_OUTPUT
+            echo "Successfully enabled auto-merge for PR #$PR_NUMBER"
+          else
+            echo "automerge_failed=true" >> $GITHUB_OUTPUT
+            echo "Could not enable auto-merge for PR #$PR_NUMBER (this may be because protected branch rules are not configured)"
+            echo "Continuing workflow - PR will need manual approval"
+          fi
+
+      - name: Notify Slack on auto-merge failure
+        if: steps.check-updates.outputs.update_available == 'true' && success() && steps.automerge.outputs.automerge_failed == 'true'
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_CHANNEL: frontegg-alpha-versions
+          SLACK_COLOR: warning
+          SLACK_ICON: https://avatars.githubusercontent.com/u/67857107?s=40&v=4
+          SLACK_MESSAGE: "React embed sample: ⚠️ PR for @frontegg/react version ${{ steps.check-updates.outputs.latest_version }} was created but auto-merge could NOT be enabled. Manual approval needed! \nRepository: ${{ github.server_url }}/${{ github.repository }}\nPR: ${{ steps.create-pr.outputs.pr_url }}"
+          SLACK_TITLE: "Auto-merge Not Enabled"
+          SLACK_USERNAME: ${{ github.actor }}
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+          MSG_MINIMAL: true
 
       - name: Notify Slack on successful update
-        if: steps.check-updates.outputs.update_available == 'true' && success()
+        if: steps.check-updates.outputs.update_available == 'true' && success() && steps.automerge.outputs.automerge_failed != 'true'
         uses: rtCamp/action-slack-notify@v2
         env:
           SLACK_CHANNEL: frontegg-alpha-versions
@@ -146,7 +168,7 @@ jobs:
           SLACK_MESSAGE: "React embed sample: ${{ github.actor }} pushed updated version of @frontegg/react version ${{ steps.check-updates.outputs.latest_version }}! \nRepository: ${{ github.server_url }}/${{ github.repository }}"
           SLACK_TITLE: "Frontegg Package Auto-Update"
           SLACK_USERNAME: ${{ github.actor }}
-          SLACK_WEBHOOK: ${{ secrets.SLACK_PRODUCTION_TOKEN }}
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
           MSG_MINIMAL: true
 
       - name: Notify Slack on build failure
@@ -159,5 +181,5 @@ jobs:
           SLACK_MESSAGE: "React embed sample: ⚠️ Build failed when updating to @frontegg/react version ${{ steps.check-updates.outputs.latest_version }}! \nRepository: ${{ github.server_url }}/${{ github.repository }}"
           SLACK_TITLE: "Frontegg Package Update Failed"
           SLACK_USERNAME: ${{ github.actor }}
-          SLACK_WEBHOOK: ${{ secrets.SLACK_PRODUCTION_TOKEN }}
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
           MSG_MINIMAL: true
