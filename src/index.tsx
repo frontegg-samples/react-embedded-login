@@ -2,8 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import "./index.css";
 import App from "./App";
-import { FronteggProvider } from "@frontegg/react";
-import { sanboxContextOptions } from "./config/sanboxContextOptions";
+
 
 const container = document.getElementById("root");
 if (!container) {
@@ -12,11 +11,6 @@ if (!container) {
 const root = ReactDOM.createRoot(container);
 root.render(
   <React.StrictMode>
-    <FronteggProvider
-      contextOptions={sanboxContextOptions}
-      hostedLoginBox={false}
-    >
-      <App />
-    </FronteggProvider>
+    <App />
   </React.StrictMode>
 );
